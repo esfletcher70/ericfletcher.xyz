@@ -1,0 +1,63 @@
+name: Deploy to hosting.com
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Build
+        run: npm run build -- --no-lint
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+
+      - name: Prune to production dependencies
+        run: npm prune --omit=dev --legacy-peer-deps
+
+      - name: Deploy over SSH (rsync)
+        uses: burnett01/rsync-deployments@7.0.1
+        with:
+          switches: >-
+            -avzr --delete
+            --exclude=.git/
+            --exclude=.github/
+            --exclude=.env
+            --exclude=.env.local
+          path: ./
+          remote_path: ${{ secrets.SSH_APP_PATH }}
+          remote_host: ${{ secrets.SSH_HOST }}
+          remote_port: ${{ secrets.SSH_PORT }}
+          remote_user: ${{ secrets.SSH_USER }}
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Restart app (Passenger)
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            mkdir -p ${{ secrets.SSH_APP_PATH }}/tmp
+            touch ${{ secrets.SSH_APP_PATH }}/tmp/restart.txt
