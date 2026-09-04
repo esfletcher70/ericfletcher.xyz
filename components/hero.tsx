@@ -29,8 +29,8 @@ export default function Hero() {
             transition={{ duration: 0.6 }}
           >
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 mb-6">
-              Eric Fletcher
-              <span className="block text-blue-700 mt-2">SAFe Certified SM & PO</span>
+              Senior Product Manager
+              <span className="block text-blue-700 mt-2">Fractional & Contract PM</span>
             </h1>
           </motion.div>
 
@@ -40,23 +40,39 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-xl sm:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto"
           >
-            Transforming teams and delivering results through{' '}
-            <span className="font-semibold text-blue-700">Agile leadership</span>{' '}
-            and strategic project management
+            15+ years shipping digital products. I help small teams get clear on{' '}
+            <span className="font-semibold text-blue-700">what to build</span>, prioritize
+            ruthlessly, and deliver it — without a full-time hire.
           </motion.p>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="flex flex-wrap justify-center gap-3 mb-8 text-sm sm:text-base"
+          >
+            {['SaaS', 'Consumer Tech', 'EV / Tech Hardware', 'Social-Impact Tech'].map((tag) => (
+              <span
+                key={tag}
+                className="bg-blue-50 text-blue-700 border border-blue-200 rounded-full px-4 py-1.5 font-medium"
+              >
+                {tag}
+              </span>
+            ))}
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="flex flex-wrap justify-center gap-4 mb-12"
+            className="flex flex-wrap justify-center gap-4 mb-4"
           >
             <Button
               onClick={scrollToContact}
               size="lg"
               className="bg-blue-700 hover:bg-blue-800 text-lg px-8 py-6"
             >
-              Let's Talk
+              Book a 15-Minute Intro
               <ArrowRight className="ml-2" size={20} />
             </Button>
             <Button
@@ -71,6 +87,15 @@ export default function Hero() {
             </Button>
           </motion.div>
 
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="text-sm sm:text-base text-gray-500 mb-12"
+          >
+            Available for fractional/contract PM work starting January.
+          </motion.p>
+
           {/* Stats */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -81,17 +106,17 @@ export default function Hero() {
             <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
               <Award className="w-12 h-12 text-blue-700 mx-auto mb-3" />
               <div className="text-4xl font-bold text-gray-900 mb-2">15+</div>
-              <div className="text-gray-600">Years Experience</div>
+              <div className="text-gray-600">Years in Product</div>
             </div>
             <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
               <Briefcase className="w-12 h-12 text-blue-700 mx-auto mb-3" />
               <div className="text-4xl font-bold text-gray-900 mb-2">$1.5B</div>
-              <div className="text-gray-600">Project Value</div>
+              <div className="text-gray-600">Product Value Shipped</div>
             </div>
             <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
               <Users className="w-12 h-12 text-blue-700 mx-auto mb-3" />
               <div className="text-4xl font-bold text-gray-900 mb-2">50+</div>
-              <div className="text-gray-600">Teams Led</div>
+              <div className="text-gray-600">Product Teams Led</div>
             </div>
           </motion.div>
         </div>

@@ -33,22 +33,23 @@ export default function About() {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <h3 className="text-3xl font-bold text-gray-900 mb-6">
-              Driving Excellence Through{' '}
-              <span className="text-blue-700">Agile Leadership</span>
+              Products That Ship —{' '}
+              <span className="text-blue-700">And Move the Numbers</span>
             </h3>
             <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-              As a <strong>Product Owner and Agile leader</strong> with over 15 years of experience,
-              I specialize in transforming complex challenges into successful digital products
-              across healthcare, finance, and technology sectors.
+              15+ years leading product strategy and delivery across{' '}
+              <strong>healthcare, fintech, enterprise SaaS, and consumer tech</strong>. I get
+              teams clear on what to build, then get it shipped.
             </p>
             <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-              My approach centers on translating business needs into actionable user stories,
-              fostering cross-functional collaboration, and delivering customer-focused solutions
-              that drive measurable results.
+              Highlights: a flagship recovery program projected to return{' '}
+              <strong>$1.5B</strong>, a mobile analytics product that earned{' '}
+              a <strong>CIO Magazine innovation award</strong>, product changes that cut support tickets
+              by <strong>67%</strong>, and an enterprise <strong>Azure platform launch</strong>.
             </p>
             <p className="text-lg text-gray-600 leading-relaxed">
-              With certifications in SAFe, CSPO, and CSM, I bring proven expertise in scaling
-              agile practices, coaching teams, and aligning product roadmaps with organizational strategy.
+              Scrum, Agile, and SAFe are how I work — not the headline. They're the toolkit
+              I use to keep teams focused and moving, whatever the org needs.
             </p>
           </motion.div>
 
@@ -60,28 +61,28 @@ export default function About() {
           >
             <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
               <Target className="w-10 h-10 text-blue-700 mb-3" />
-              <h4 className="text-xl font-bold text-gray-900 mb-2">Strategic Vision</h4>
+              <h4 className="text-xl font-bold text-gray-900 mb-2">Product Outcomes</h4>
               <p className="text-gray-600">
-                Aligning product roadmaps with business objectives and delivering solutions
-                that drive organizational success.
+                $1.5B recovery program, a CIO Magazine innovation award for a mobile analytics
+                product, and a 67% cut in support tickets through better product decisions.
               </p>
             </div>
 
             <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
               <Zap className="w-10 h-10 text-blue-700 mb-3" />
-              <h4 className="text-xl font-bold text-gray-900 mb-2">Agile Transformation</h4>
+              <h4 className="text-xl font-bold text-gray-900 mb-2">How I Work</h4>
               <p className="text-gray-600">
-                Leading teams through agile adoption, coaching Scrum Masters and Product Owners,
-                and facilitating PI Planning at scale.
+                Scrum, Agile, and SAFe as tools — used to keep prioritization sharp and
+                delivery on track, not as a facilitation checklist.
               </p>
             </div>
 
             <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
               <Shield className="w-10 h-10 text-blue-700 mb-3" />
-              <h4 className="text-xl font-bold text-gray-900 mb-2">Proven Results</h4>
+              <h4 className="text-xl font-bold text-gray-900 mb-2">Available January</h4>
               <p className="text-gray-600">
-                Track record of managing high-visibility projects, reducing support tickets by 67%,
-                and delivering $1.5B in value recovery.
+                Open for fractional/contract PM work in SaaS, consumer tech, EV/tech
+                hardware, or social-impact tech.
               </p>
             </div>
           </motion.div>
