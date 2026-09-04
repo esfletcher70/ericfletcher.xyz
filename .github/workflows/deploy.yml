@@ -51,6 +51,22 @@ jobs:
           remote_user: ${{ secrets.SSH_USER }}
           remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
 
+      - name: Sync database schema (prisma db push)
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: DATABASE_URL
+          script: |
+            APP_NAME=$(basename "${{ secrets.SSH_APP_PATH }}")
+            source "/home/${{ secrets.SSH_USER }}/nodevenv/${APP_NAME}/20/bin/activate"
+            cd "${{ secrets.SSH_APP_PATH }}"
+            npx prisma db push --skip-generate
+
       - name: Restart app (Passenger)
         uses: appleboy/ssh-action@v1.0.3
         with:
