@@ -32,9 +32,6 @@ jobs:
           NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
 
-      - name: Prune to production dependencies
-        run: npm prune --omit=dev --legacy-peer-deps
-
       - name: Deploy over SSH (rsync)
         uses: burnett01/rsync-deployments@7.0.1
         with:
@@ -44,6 +41,7 @@ jobs:
             --exclude=.github/
             --exclude=.env
             --exclude=.env.local
+            --exclude=node_modules/
           path: ./
           remote_path: ${{ secrets.SSH_APP_PATH }}
           remote_host: ${{ secrets.SSH_HOST }}
@@ -51,7 +49,7 @@ jobs:
           remote_user: ${{ secrets.SSH_USER }}
           remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Sync database schema (prisma db push)
+      - name: Install deps, generate client, sync schema (on server)
         uses: appleboy/ssh-action@v1.0.3
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -65,6 +63,8 @@ jobs:
             APP_NAME=$(basename "${{ secrets.SSH_APP_PATH }}")
             source "/home/${{ secrets.SSH_USER }}/nodevenv/${APP_NAME}/20/bin/activate"
             cd "${{ secrets.SSH_APP_PATH }}"
+            npm install --omit=dev --legacy-peer-deps
+            npx prisma generate
             npx prisma db push --skip-generate
 
       - name: Restart app (Passenger)
