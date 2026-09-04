@@ -32,7 +32,10 @@ jobs:
           NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
 
-      - name: Deploy over SSH (rsync)
+      - name: Prune to production dependencies
+        run: npm prune --omit=dev --legacy-peer-deps
+
+      - name: Deploy over SSH (rsync, including node_modules)
         uses: burnett01/rsync-deployments@7.0.1
         with:
           switches: >-
@@ -41,7 +44,6 @@ jobs:
             --exclude=.github/
             --exclude=.env
             --exclude=.env.local
-            --exclude=node_modules/
           path: ./
           remote_path: ${{ secrets.SSH_APP_PATH }}
           remote_host: ${{ secrets.SSH_HOST }}
@@ -49,7 +51,7 @@ jobs:
           remote_user: ${{ secrets.SSH_USER }}
           remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Install deps, generate client, sync schema (on server)
+      - name: Sync database schema (on server)
         uses: appleboy/ssh-action@v1.0.3
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -60,12 +62,9 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           envs: DATABASE_URL
           script: |
-            APP_NAME=$(basename "${{ secrets.SSH_APP_PATH }}")
-            source "/home/${{ secrets.SSH_USER }}/nodevenv/${APP_NAME}/20/bin/activate"
+            source "/home/${{ secrets.SSH_USER }}/nodevenv/$(basename ${{ secrets.SSH_APP_PATH }})/20/bin/activate"
             cd "${{ secrets.SSH_APP_PATH }}"
-            npm install --omit=dev --legacy-peer-deps
-            npx prisma generate
-            npx prisma db push --skip-generate
+            node_modules/.bin/prisma db push --skip-generate
 
       - name: Restart app (Passenger)
         uses: appleboy/ssh-action@v1.0.3
