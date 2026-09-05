@@ -1,11 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { sendEmail, generateContactNotificationEmail } from '@/lib/email'
+import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
 
 export const dynamic = 'force-dynamic'
 
+const RATE_LIMIT = 5
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000 // 10 minutes
+
 export async function POST(request: NextRequest) {
   try {
+    const ip = getClientIp(request.headers)
+    if (!checkRateLimit(`contact:${ip}`, RATE_LIMIT, RATE_LIMIT_WINDOW_MS)) {
+      return NextResponse.json(
+        { error: 'Too many submissions. Please try again later.' },
+        { status: 429 }
+      )
+    }
+
     const body = await request.json()
     const { name, email, message } = body
 
@@ -36,26 +48,31 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // Send email notification
-    const emailContent = generateContactNotificationEmail({
-      name,
-      email,
-      message,
-      timestamp: submission.createdAt,
-    })
-
-    await sendEmail({
-      to: 'hello@ericfletcher.xyz',
-      subject: emailContent.subject,
-      html: emailContent.html,
-    })
-
     console.log('New contact submission:', {
       id: submission.id,
       name,
       email,
       timestamp: submission.createdAt,
     })
+
+    // Send email notification. The submission is already saved, so a failure
+    // here shouldn't fail the request or prompt the user to resubmit — just log it.
+    try {
+      const emailContent = generateContactNotificationEmail({
+        name,
+        email,
+        message,
+        timestamp: submission.createdAt,
+      })
+
+      await sendEmail({
+        to: 'hello@ericfletcher.xyz',
+        subject: emailContent.subject,
+        html: emailContent.html,
+      })
+    } catch (emailError) {
+      console.error('Error sending contact notification email:', emailError)
+    }
 
     return NextResponse.json(
       {
