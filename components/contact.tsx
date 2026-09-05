@@ -68,7 +68,7 @@ export default function Contact() {
           </h2>
           <div className="w-24 h-1 bg-blue-700 mx-auto mb-6" />
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Ready to transform your team and deliver results? Get in touch.
+            Available for fractional/contract PM work starting January. Book a 15-minute intro.
           </p>
         </motion.div>
 
@@ -80,14 +80,13 @@ export default function Contact() {
           >
             <h3 className="text-2xl font-bold text-gray-900 mb-6">Get In Touch</h3>
             <p className="text-gray-600 mb-8 leading-relaxed">
-              I'm currently available for freelance Scrum Master, Project Manager, and Agile
-              leadership roles. Whether you need help with agile transformation, team coaching,
-              or project delivery, I'd love to hear from you.
+              Looking for fractional or contract product leadership? Send a message, book a
+              15-minute intro call, or connect on LinkedIn.
             </p>
 
             <div className="space-y-4">
               <a
-                href="mailto:hello@ericfletcher.xyz"
+                href="mailto:hello@ericfletcher.xyz?subject=15-minute%20intro"
                 className="flex items-center text-gray-700 hover:text-blue-700 transition-colors group"
               >
                 <div className="bg-blue-100 p-3 rounded-lg mr-4 group-hover:bg-blue-200 transition-colors">

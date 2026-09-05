@@ -3,56 +3,56 @@
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import {
-  Target,
+  Briefcase,
+  Compass,
+  ListChecks,
   Users,
-  TrendingUp,
-  GitBranch,
-  CheckCircle,
-  MessageSquare,
 } from 'lucide-react'
 
 const services = [
   {
+    icon: Briefcase,
+    title: 'Fractional / Contract Product Management',
+    description:
+      'Embedded product leadership for as long as you need it — full ownership of your roadmap and team without a full-time hire.',
+    highlights: [
+      'Product decisions owned from day one',
+      'Ramps up faster than a full-time search',
+      'Scales up or down with your needs',
+    ],
+  },
+  {
+    icon: Compass,
+    title: 'Product Roadmap & Strategy',
+    description:
+      'Turn business goals into a roadmap that engineering, sales, and leadership can all rally around.',
+    highlights: [
+      'A prioritized roadmap tied to business outcomes',
+      'Shared alignment across leadership and teams',
+      'A living plan that adapts as priorities shift',
+    ],
+  },
+  {
+    icon: ListChecks,
+    title: 'Backlog Prioritization & Release Planning',
+    description:
+      'Keep the backlog sharp and releases predictable, so teams always know what to build next and why.',
+    highlights: [
+      'A backlog ranked by impact, not noise',
+      'Predictable, dependable release cadence',
+      'Less rework from clearer acceptance criteria',
+    ],
+  },
+  {
     icon: Users,
-    title: 'Scrum Master Services',
+    title: 'Stakeholder Alignment & Product Cadence',
     description:
-      'Facilitate Agile ceremonies, coach teams on best practices, and remove impediments to enable high-performing teams.',
-    highlights: ['Daily Stand-ups', 'Sprint Planning', 'Retrospectives', 'Team Coaching'],
-  },
-  {
-    icon: Target,
-    title: 'Product Ownership',
-    description:
-      'Define product vision, manage backlogs, prioritize features, and ensure delivery of customer-focused solutions.',
-    highlights: ['Backlog Management', 'User Story Creation', 'Acceptance Criteria', 'Stakeholder Management'],
-  },
-  {
-    icon: TrendingUp,
-    title: 'Release Train Engineer',
-    description:
-      'Facilitate Program Increment planning, coordinate multiple teams, and drive alignment across Agile Release Trains.',
-    highlights: ['PI Planning', 'ART Coordination', 'Risk Management', 'Value Stream Delivery'],
-  },
-  {
-    icon: GitBranch,
-    title: 'Agile Transformation',
-    description:
-      'Lead organizational change initiatives, establish agile frameworks, and coach leaders on agile principles.',
-    highlights: ['Framework Implementation', 'Leadership Coaching', 'Process Optimization', 'Change Management'],
-  },
-  {
-    icon: CheckCircle,
-    title: 'Project Management',
-    description:
-      'Manage complex projects with competing priorities, coordinate cross-functional teams, and ensure on-time delivery.',
-    highlights: ['Budget Management', 'Timeline Planning', 'Resource Allocation', 'Risk Mitigation'],
-  },
-  {
-    icon: MessageSquare,
-    title: 'Team Leadership & Coaching',
-    description:
-      'Mentor team members, facilitate collaboration, and create environments where teams can thrive and deliver excellence.',
-    highlights: ['Team Building', 'Conflict Resolution', 'Performance Coaching', 'Culture Development'],
+      'Establish the rhythms and reporting that keep execs, customers, and teams moving in sync.',
+    highlights: [
+      'Fewer surprises for stakeholders',
+      'A consistent cadence for decisions and updates',
+      'Clear visibility into progress and tradeoffs',
+    ],
   },
 ]
 
@@ -77,11 +77,11 @@ export default function Services() {
           </h2>
           <div className="w-24 h-1 bg-blue-700 mx-auto mb-6" />
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Comprehensive Agile leadership and project management services tailored to drive results
+            Product leadership that turns strategy into shipped outcomes
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 gap-8">
           {services.map((service, index) => {
             const Icon = service.icon
             return (
@@ -109,6 +109,19 @@ export default function Services() {
             )
           })}
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="mt-12 max-w-3xl mx-auto text-center bg-white rounded-xl p-6 shadow-md"
+        >
+          <h3 className="text-lg font-bold text-gray-900 mb-2">How I work</h3>
+          <p className="text-gray-600">
+            I deliver through Agile, Scrum, and SAFe practices — not as services in themselves,
+            but as the operating rhythm that keeps roadmaps, backlogs, and stakeholders moving in sync.
+          </p>
+        </motion.div>
       </div>
     </section>
   )

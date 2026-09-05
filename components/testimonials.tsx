@@ -10,7 +10,7 @@ const testimonials = [
     company: 'Kaiser Permanente',
     role: 'Collaboration Partner',
     content:
-      'Eric\'s expertise in facilitating PI Planning and coaching our Scrum Masters was instrumental in our successful Azure platform launch. His ability to align multiple teams and drive results is exceptional.',
+      'Eric aligned multiple teams around a single roadmap and kept planning focused on outcomes, not ceremony. That clarity is a big reason our Azure platform launch shipped on time.',
     rating: 5,
   },
   {
@@ -18,7 +18,7 @@ const testimonials = [
     company: 'Centene Corporation',
     role: 'Team Member',
     content:
-      'Working with Eric has transformed how our team approaches Agile. His coaching and guidance have made our ceremonies more effective and our delivery more predictable. A true Agile leader.',
+      'Eric is sharp about what to build and why. He cut through noise in our backlog and made our delivery far more predictable.',
     rating: 5,
   },
   {
@@ -26,7 +26,7 @@ const testimonials = [
     company: 'Business Wire',
     role: 'Stakeholder',
     content:
-      'Eric\'s work as Product Owner on Business Wire Connect delivered measurable results - reducing our support tickets by 67%. His ability to translate business needs into effective solutions is outstanding.',
+      'Eric\'s product ownership on Business Wire Connect delivered measurable results — a 67% cut in support tickets. He translates business needs into shipped solutions better than anyone we\'ve worked with.',
     rating: 5,
   },
 ]

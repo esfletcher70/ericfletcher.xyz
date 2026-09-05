@@ -3,72 +3,32 @@
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import {
-  Award,
-  GitBranch,
-  FileCheck,
-  BarChart3,
+  Target,
   Users2,
+  BarChart3,
+  GitBranch,
   Workflow,
 } from 'lucide-react'
 
 const skillCategories = [
   {
-    icon: Award,
-    title: 'Certifications',
+    icon: Target,
+    title: 'Product Management',
     skills: [
-      'Certified Scrum Master (CSM)',
-      'Certified Scrum Product Owner (CSPO)',
-      'SAFe 5 Release Train Engineer',
-      'SAFe 5 Scrum Master',
-      'SAFe 4 Product Owner/Product Manager',
-    ],
-  },
-  {
-    icon: Workflow,
-    title: 'Agile Frameworks',
-    skills: [
-      'Scrum',
-      'SAFe (Scaled Agile Framework)',
-      'Kanban',
-      'Lean',
-      'Program Increment Planning',
-      'Agile Release Train (ART)',
-    ],
-  },
-  {
-    icon: FileCheck,
-    title: 'Project Management',
-    skills: [
-      'Product Backlog Management',
-      'User Story Creation',
-      'Sprint Planning & Execution',
-      'Risk Management',
-      'Budget Management',
-      'Stakeholder Communication',
+      'Roadmap & Strategy',
+      'Backlog Prioritization',
+      'User Stories & Acceptance Criteria',
+      'Release Planning',
     ],
   },
   {
     icon: Users2,
-    title: 'Leadership & Coaching',
+    title: 'Leadership & Program Management',
     skills: [
-      'Team Facilitation',
-      'Agile Coaching',
-      'Conflict Resolution',
+      'Stakeholder & Executive Communication',
+      'Cross-functional Team Leadership',
+      'Risk & Budget Management',
       'Change Management',
-      'Cross-functional Collaboration',
-      'Mentoring & Training',
-    ],
-  },
-  {
-    icon: GitBranch,
-    title: 'Tools & Technologies',
-    skills: [
-      'JIRA & Confluence',
-      'Azure DevOps',
-      'Microsoft Office Suite',
-      'ServiceNow',
-      'Slack & MS Teams',
-      'Version Control (Git)',
     ],
   },
   {
@@ -77,10 +37,25 @@ const skillCategories = [
     skills: [
       'Healthcare IT',
       'Financial Services',
-      'Enterprise Software',
-      'Mobile Applications',
-      'Ecommerce Platforms',
+      'Enterprise SaaS',
+      'Mobile & E-commerce',
+    ],
+  },
+  {
+    icon: GitBranch,
+    title: 'Tools',
+    skills: [
+      'JIRA & Confluence',
+      'Azure DevOps',
       'Business Analytics',
+    ],
+  },
+  {
+    icon: Workflow,
+    title: 'Delivery Method: Agile / Scrum / SAFe',
+    skills: [
+      'CSM, CSPO, SAFe RTE & Product Owner certified',
+      'Used to keep prioritization sharp and delivery predictable',
     ],
   },
 ]
@@ -106,7 +81,7 @@ export default function Skills() {
           </h2>
           <div className="w-24 h-1 bg-blue-700 mx-auto mb-6" />
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            A comprehensive toolkit for driving agile transformation and delivering excellence
+            Product management skills, backed by an Agile/Scrum/SAFe delivery toolkit
           </p>
         </motion.div>
 

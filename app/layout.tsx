@@ -7,14 +7,14 @@ import { Providers } from '@/components/providers'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Eric Fletcher - Scrum Master & Project Manager',
-  description: 'Professional portfolio of Eric Fletcher - Experienced Scrum Master, Project Manager, and Agile Leader specializing in healthcare and enterprise solutions.',
-  keywords: ['Scrum Master', 'Project Manager', 'Agile', 'Product Owner', 'RTE', 'Release Train Engineer'],
+  title: 'Eric Fletcher - Senior / Fractional Product Manager',
+  description: 'Eric Fletcher is a Senior Product Manager available for fractional and contract work — 15+ years shipping products in healthcare, fintech, and enterprise SaaS.',
+  keywords: ['Product Manager', 'Fractional Product Manager', 'Contract Product Manager', 'Product Strategy', 'Product Owner', 'Roadmap'],
   authors: [{ name: 'Eric Fletcher' }],
   metadataBase: new URL('https://ericfletcher.xyz'),
   openGraph: {
-    title: 'Eric Fletcher - Scrum Master & Project Manager',
-    description: 'Professional portfolio of Eric Fletcher - Experienced Scrum Master, Project Manager, and Agile Leader.',
+    title: 'Eric Fletcher - Senior / Fractional Product Manager',
+    description: 'Eric Fletcher is a Senior Product Manager available for fractional and contract work — 15+ years shipping products in healthcare, fintech, and enterprise SaaS.',
     url: 'https://ericfletcher.xyz',
     siteName: 'Eric Fletcher Portfolio',
     images: [

@@ -3,42 +3,42 @@
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import Image from 'next/image'
-import { ExternalLink, Award } from 'lucide-react'
+import { Award } from 'lucide-react'
 
 const projects = [
   {
-    title: 'Healthcare Claims Recovery System',
-    description:
-      'Leading Agile ceremonies for high-visibility teams developing an enterprise claims recovery application projected to return $1.5 billion in overpaid claims. Coaching Product Owners and leaders on Agile best practices while collecting and reporting key metrics to executive leadership.',
+    title: 'Healthcare Claims Recovery Program',
+    problem: 'Overpaid claims across a large healthcare payer were going unrecovered, with no clear prioritization or executive visibility.',
+    role: 'Owned prioritization for the recovery roadmap and reported progress directly to executive leadership.',
+    result: '$1.5B in projected claims recovery.',
     image: 'https://cdn.abacus.ai/images/44d6d642-0958-4b52-9ec1-a543bbe5f39a.jpg',
-    tags: ['Scrum Master', 'Agile Coaching', 'Healthcare', 'Enterprise'],
-    highlights: ['$1.5B Value Recovery', 'Cross-functional Teams', 'Executive Reporting'],
+    tags: ['Healthcare', 'Enterprise', 'Executive Reporting'],
   },
   {
-    title: 'Healthcare Member Portal & Mobile App',
-    description:
-      'Served as Release Train Engineer and Agile Product Owner for mobile application and member website transformation. Led PI Planning, coached Scrum Masters and Product Managers, and facilitated ART-level meetings. First in solution train to launch on new cloud platform.',
+    title: 'Member Portal & Mobile App: Cloud Platform Launch',
+    problem: 'A legacy member portal and mobile app needed to move to a new cloud platform without breaking delivery across multiple teams.',
+    role: 'Owned the product and program plan across teams and aligned roadmaps end-to-end.',
+    result: 'First product in the solution train to launch on the new Azure cloud platform.',
     image: 'https://cdn.abacus.ai/images/f4504f06-c8a1-45df-92d7-e91cc9ba3e76.jpg',
-    tags: ['RTE', 'Product Owner', 'Mobile', 'Cloud Platform'],
-    highlights: ['Cloud Platform Launch', 'PI Planning Facilitation', 'Team Alignment'],
+    tags: ['Healthcare', 'Mobile', 'Cloud Platform'],
     award: true,
   },
   {
-    title: 'Healthcare Operations Mobile Application',
-    description:
-      'Led development of innovative mobile application used by medical center staff for operational workflows. Received CIO Award for Innovation for transforming healthcare operations and improving staff efficiency through mobile-first design.',
+    title: 'Operations Mobile App: CIO Innovation Award',
+    problem: 'Medical center staff relied on manual, paper-based workflows that slowed daily operations.',
+    role: 'Owned product vision and requirements for a mobile-first replacement, working directly with engineering and end users.',
+    result: 'CIO Magazine Innovation Award and a measurable gain in staff efficiency.',
     image: 'https://cdn.abacus.ai/images/11e90c1b-98bf-4ea3-b859-f1ef038ead1c.jpg',
-    tags: ['Product Owner', 'Healthcare', 'Innovation', 'Mobile'],
-    highlights: ['CIO Award Winner', 'Staff Efficiency', 'Mobile Innovation'],
+    tags: ['Healthcare', 'Mobile', 'Innovation'],
     award: true,
   },
   {
     title: 'E-commerce Order Management Platform',
-    description:
-      'Product Owner for an online order entry and management system. Investigated business needs, documented requirements, and worked with engineering teams to deliver solutions. Reduced application support tickets from 750+ to under 250 in just 6 months.',
+    problem: 'Order management support tickets had climbed past 750 a month, signaling a broken user experience.',
+    role: 'Sole product owner — diagnosed root causes, redefined requirements, and drove fixes with engineering.',
+    result: 'Support tickets cut from 750+ to under 250 in 6 months (a 67% reduction).',
     image: 'https://cdn.abacus.ai/images/4fd741a8-1872-4b62-8166-3239128d2cf0.jpg',
-    tags: ['Product Owner', 'E-commerce', 'Process Improvement'],
-    highlights: ['67% Ticket Reduction', 'Process Optimization', 'User Experience'],
+    tags: ['E-commerce', 'Product Ownership'],
   },
 ]
 
@@ -63,7 +63,7 @@ export default function Portfolio() {
           </h2>
           <div className="w-24 h-1 bg-blue-700 mx-auto mb-6" />
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Delivering impactful solutions across healthcare, finance, and technology sectors
+            Selected outcomes: the problem, my role, and the result
           </p>
         </motion.div>
 
@@ -97,21 +97,20 @@ export default function Portfolio() {
                     )}
                   </div>
 
-                  <p className="text-gray-600 mb-4 leading-relaxed">
-                    {project.description}
-                  </p>
-
-                  <div className="mb-4">
-                    <h4 className="font-semibold text-gray-900 mb-2">Key Achievements:</h4>
-                    <ul className="space-y-1">
-                      {project.highlights.map((highlight, idx) => (
-                        <li key={idx} className="flex items-center text-sm text-gray-600">
-                          <ExternalLink className="w-4 h-4 text-blue-700 mr-2 flex-shrink-0" />
-                          {highlight}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                  <dl className="space-y-3 mb-4">
+                    <div>
+                      <dt className="text-xs font-semibold uppercase tracking-wide text-gray-500">Problem</dt>
+                      <dd className="text-gray-600 leading-relaxed">{project.problem}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-xs font-semibold uppercase tracking-wide text-gray-500">My Role</dt>
+                      <dd className="text-gray-600 leading-relaxed">{project.role}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-xs font-semibold uppercase tracking-wide text-blue-700">Result</dt>
+                      <dd className="text-gray-900 font-semibold leading-relaxed">{project.result}</dd>
+                    </div>
+                  </dl>
 
                   <div className="flex flex-wrap gap-2">
                     {project.tags.map((tag, idx) => (
