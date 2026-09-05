@@ -26,6 +26,12 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           DATABASE_URL_UNPOOLED: ${{ secrets.DATABASE_URL_UNPOOLED }}
 
+      - name: Sync database schema
+        run: npx prisma db push --skip-generate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL_UNPOOLED: ${{ secrets.DATABASE_URL_UNPOOLED }}
+
       - name: Build
         run: npm run build
         env:
@@ -50,17 +56,13 @@ jobs:
           source: deploy.tar.gz
           target: /tmp
 
-      - name: Extract archive and sync database schema (on server)
+      - name: Extract archive (on server)
         uses: appleboy/ssh-action@v1.0.3
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DATABASE_URL_UNPOOLED: ${{ secrets.DATABASE_URL_UNPOOLED }}
         with:
           host: ${{ secrets.SSH_HOST }}
           port: ${{ secrets.SSH_PORT }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: DATABASE_URL,DATABASE_URL_UNPOOLED
           command_timeout: 10m
           script: |
             set -e
@@ -70,8 +72,6 @@ jobs:
             rm -rf "${{ secrets.SSH_APP_PATH }}"/.next "${{ secrets.SSH_APP_PATH }}"/node_modules
             tar -xzf /tmp/deploy.tar.gz -C "${{ secrets.SSH_APP_PATH }}"
             rm -f /tmp/deploy.tar.gz
-            cd "${{ secrets.SSH_APP_PATH }}"
-            node node_modules/.bin/prisma db push --skip-generate
 
       - name: Restart app (Passenger)
         uses: appleboy/ssh-action@v1.0.3
