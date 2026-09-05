@@ -35,23 +35,20 @@ jobs:
       - name: Prune to production dependencies
         run: npm prune --omit=dev --legacy-peer-deps
 
-      - name: Deploy over SSH (rsync, including node_modules)
-        uses: burnett01/rsync-deployments@7.0.1
-        with:
-          switches: >-
-            -avzr --delete
-            --exclude=.git/
-            --exclude=.github/
-            --exclude=.env
-            --exclude=.env.local
-          path: ./
-          remote_path: ${{ secrets.SSH_APP_PATH }}
-          remote_host: ${{ secrets.SSH_HOST }}
-          remote_port: ${{ secrets.SSH_PORT }}
-          remote_user: ${{ secrets.SSH_USER }}
-          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Package build artifact
+        run: tar -czf ../deploy.tar.gz --exclude=.git --exclude=.github . && mv ../deploy.tar.gz ./deploy.tar.gz
 
-      - name: Sync database schema (on server)
+      - name: Upload archive to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: deploy.tar.gz
+          target: /tmp
+
+      - name: Extract archive and sync database schema (on server)
         uses: appleboy/ssh-action@v1.0.3
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -61,9 +58,15 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           envs: DATABASE_URL
+          command_timeout: 10m
           script: |
+            set -e
             APP_NAME=$(basename "${{ secrets.SSH_APP_PATH }}")
             source "/home/${{ secrets.SSH_USER }}/nodevenv/${APP_NAME}/20/bin/activate"
+            mkdir -p "${{ secrets.SSH_APP_PATH }}"
+            rm -rf "${{ secrets.SSH_APP_PATH }}"/.next "${{ secrets.SSH_APP_PATH }}"/node_modules
+            tar -xzf /tmp/deploy.tar.gz -C "${{ secrets.SSH_APP_PATH }}"
+            rm -f /tmp/deploy.tar.gz
             cd "${{ secrets.SSH_APP_PATH }}"
             node node_modules/.bin/prisma db push --skip-generate
 
