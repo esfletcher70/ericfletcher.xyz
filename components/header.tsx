@@ -65,7 +65,7 @@ export default function Header() {
             onClick={() => scrollToSection('#contact')}
             className="hidden md:flex bg-blue-700 hover:bg-blue-800"
           >
-            Let's Talk
+            Let&apos;s Talk
           </Button>
 
           {/* Mobile Menu Button */}
@@ -95,7 +95,7 @@ export default function Header() {
               onClick={() => scrollToSection('#contact')}
               className="w-full bg-blue-700 hover:bg-blue-800 mt-2"
             >
-              Let's Talk
+              Let&apos;s Talk
             </Button>
           </nav>
         </div>

@@ -48,7 +48,7 @@ export default function About() {
               by <strong>67%</strong>, and an enterprise <strong>Azure platform launch</strong>.
             </p>
             <p className="text-lg text-gray-600 leading-relaxed">
-              Scrum, Agile, and SAFe are how I work — not the headline. They're the toolkit
+              Scrum, Agile, and SAFe are how I work — not the headline. They&apos;re the toolkit
               I use to keep teams focused and moving, whatever the org needs.
             </p>
           </motion.div>

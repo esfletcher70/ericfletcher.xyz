@@ -64,7 +64,7 @@ export default function Contact() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
-            Let's Work Together
+            Let&apos;s Work Together
           </h2>
           <div className="w-24 h-1 bg-blue-700 mx-auto mb-6" />
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -172,7 +172,7 @@ export default function Contact() {
               {status === 'success' && (
                 <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center text-green-800">
                   <CheckCircle className="w-5 h-5 mr-2 flex-shrink-0" />
-                  <span className="text-sm">Message sent successfully! I'll get back to you soon.</span>
+                  <span className="text-sm">Message sent successfully! I&apos;ll get back to you soon.</span>
                 </div>
               )}
 

@@ -58,24 +58,6 @@ export default function AdminDashboard() {
   }, [status])
 
   useEffect(() => {
-    filterSubmissions()
-  }, [submissions, filterStatus, searchQuery])
-
-  const fetchSubmissions = async () => {
-    try {
-      const response = await fetch('/api/admin/submissions')
-      if (response.ok) {
-        const data = await response.json()
-        setSubmissions(data.submissions)
-      }
-    } catch (error) {
-      console.error('Error fetching submissions:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const filterSubmissions = () => {
     let filtered = submissions
 
     // Filter by status
@@ -95,6 +77,20 @@ export default function AdminDashboard() {
     }
 
     setFilteredSubmissions(filtered)
+  }, [submissions, filterStatus, searchQuery])
+
+  const fetchSubmissions = async () => {
+    try {
+      const response = await fetch('/api/admin/submissions')
+      if (response.ok) {
+        const data = await response.json()
+        setSubmissions(data.submissions)
+      }
+    } catch (error) {
+      console.error('Error fetching submissions:', error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const updateStatus = async (id: string, newStatus: string) => {
