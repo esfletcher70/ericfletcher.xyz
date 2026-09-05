@@ -62,9 +62,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           envs: DATABASE_URL
           script: |
-            source "/home/${{ secrets.SSH_USER }}/nodevenv/$(basename ${{ secrets.SSH_APP_PATH }})/20/bin/activate"
             cd "${{ secrets.SSH_APP_PATH }}"
-            node_modules/.bin/prisma db push --skip-generate
+            ./node_modules/.bin/prisma db push --skip-generate
 
       - name: Restart app (Passenger)
         uses: appleboy/ssh-action@v1.0.3
