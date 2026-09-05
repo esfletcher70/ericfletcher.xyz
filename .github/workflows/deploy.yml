@@ -24,11 +24,13 @@ jobs:
         run: npx prisma generate
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL_UNPOOLED: ${{ secrets.DATABASE_URL_UNPOOLED }}
 
       - name: Build
         run: npm run build -- --no-lint
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL_UNPOOLED: ${{ secrets.DATABASE_URL_UNPOOLED }}
           NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
 
@@ -52,12 +54,13 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL_UNPOOLED: ${{ secrets.DATABASE_URL_UNPOOLED }}
         with:
           host: ${{ secrets.SSH_HOST }}
           port: ${{ secrets.SSH_PORT }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: DATABASE_URL
+          envs: DATABASE_URL,DATABASE_URL_UNPOOLED
           command_timeout: 10m
           script: |
             set -e
