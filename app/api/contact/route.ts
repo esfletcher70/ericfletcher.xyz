@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { sendEmail, generateContactNotificationEmail } from '@/lib/email'
+import { notifyOtterlyOfLead } from '@/lib/otterly'
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
 
 export const dynamic = 'force-dynamic'
@@ -72,6 +73,14 @@ export async function POST(request: NextRequest) {
       })
     } catch (emailError) {
       console.error('Error sending contact notification email:', emailError)
+    }
+
+    // Sync lead to Otterly CRM. Best-effort/non-blocking, same as the email
+    // notification above — a failure here must never fail the user's submission.
+    try {
+      await notifyOtterlyOfLead({ name, email, message })
+    } catch (otterlyError) {
+      console.error('Error syncing lead to Otterly:', otterlyError)
     }
 
     return NextResponse.json(

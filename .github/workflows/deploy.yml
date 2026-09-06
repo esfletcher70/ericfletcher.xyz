@@ -39,6 +39,8 @@ jobs:
           DATABASE_URL_UNPOOLED: ${{ secrets.DATABASE_URL_UNPOOLED }}
           NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          OTTERLY_API_URL: ${{ secrets.OTTERLY_API_URL }}
+          OTTERLY_API_KEY: ${{ secrets.OTTERLY_API_KEY }}
 
       - name: Prune to production dependencies
         run: npm prune --omit=dev --legacy-peer-deps
