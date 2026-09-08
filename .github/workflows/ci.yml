@@ -32,6 +32,8 @@ jobs:
       - name: Build (OpenNext)
         run: npx opennextjs-cloudflare build
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+          # Placeholders are fine — the build never connects, it only needs the
+          # vars to be present. Real values are injected in deploy.yml.
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://u:p@placeholder.neon.tech/db' }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET || 'ci-placeholder' }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL || 'https://ericfletcher.xyz' }}
