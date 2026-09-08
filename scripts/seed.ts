@@ -4,37 +4,22 @@ import bcrypt from 'bcryptjs'
 const prisma = new PrismaClient()
 
 async function main() {
-  console.log('Starting seed...')
+  const email = process.env.SEED_ADMIN_EMAIL || 'eric@ericfletcher.xyz'
+  const password = process.env.SEED_ADMIN_PASSWORD
+  const name = process.env.SEED_ADMIN_NAME || 'Eric Fletcher'
 
-  // Create test admin user
-  const testAdminPassword = await bcrypt.hash('johndoe123', 10)
-  const testAdmin = await prisma.user.upsert({
-    where: { email: 'john@doe.com' },
-    update: {},
-    create: {
-      email: 'john@doe.com',
-      password: testAdminPassword,
-      name: 'Test Admin',
-      role: 'admin',
-    },
+  if (!password) {
+    throw new Error('SEED_ADMIN_PASSWORD is required (no default)')
+  }
+
+  const hashed = await bcrypt.hash(password, 10)
+  const admin = await prisma.user.upsert({
+    where: { email },
+    update: { password: hashed, role: 'admin', name },
+    create: { email, password: hashed, name, role: 'admin' },
   })
-  console.log('Test admin user created:', testAdmin.email)
 
-  // Create Eric's admin account
-  const ericPassword = await bcrypt.hash('AdminPass123!', 10)
-  const ericAdmin = await prisma.user.upsert({
-    where: { email: 'eric@ericfletcher.xyz' },
-    update: {},
-    create: {
-      email: 'eric@ericfletcher.xyz',
-      password: ericPassword,
-      name: 'Eric Fletcher',
-      role: 'admin',
-    },
-  })
-  console.log('Eric admin user created:', ericAdmin.email)
-
-  console.log('Seed completed successfully!')
+  console.log('Admin user ready:', admin.email)
 }
 
 main()

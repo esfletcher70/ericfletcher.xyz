@@ -1,9 +1,10 @@
 const attempts = new Map<string, number[]>()
 
 /**
- * In-memory sliding-window rate limiter. Only correct for a single persistent
- * process (this app runs via Passenger, not serverless/edge) — state doesn't
- * survive a restart and isn't shared across instances.
+ * In-memory sliding-window rate limiter. On Cloudflare Workers this is
+ * per-isolate — not shared across isolates and reset on redeploy — which is an
+ * acceptable weak guarantee for a low-traffic marketing site. Escalate to
+ * Cloudflare WAF Rate Limiting if it's ever abused.
  */
 export function checkRateLimit(key: string, limit: number, windowMs: number): boolean {
   const now = Date.now()
@@ -20,12 +21,11 @@ export function checkRateLimit(key: string, limit: number, windowMs: number): bo
   return true
 }
 
-export function getClientIp(headers: Headers | Record<string, string | string[] | undefined>): string {
-  const forwardedFor =
-    headers instanceof Headers
-      ? headers.get('x-forwarded-for')
-      : headers['x-forwarded-for']
-
-  const value = Array.isArray(forwardedFor) ? forwardedFor[0] : forwardedFor
-  return value?.split(',')[0]?.trim() || 'unknown'
+export function getClientIp(headers: Headers): string {
+  return (
+    headers.get('cf-connecting-ip') ||
+    headers.get('x-real-ip') ||
+    headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    'unknown'
+  )
 }

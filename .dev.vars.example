@@ -1,0 +1,9 @@
+# Local bindings/env for `npm run preview` (opennextjs-cloudflare).
+# Copy to .dev.vars and fill in. `next dev` reads .env instead.
+
+DATABASE_URL="postgresql://USER:PASSWORD@HOST-pooler.REGION.aws.neon.tech/neondb?sslmode=require"
+DATABASE_URL_UNPOOLED="postgresql://USER:PASSWORD@HOST.REGION.aws.neon.tech/neondb?sslmode=require"
+NEXTAUTH_SECRET="dev-secret-change-me"
+NEXTAUTH_URL="http://localhost:8788"
+OTTERLY_API_URL="https://otterly.work"
+OTTERLY_API_KEY=""

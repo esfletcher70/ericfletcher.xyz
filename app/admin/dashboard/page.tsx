@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
@@ -52,8 +53,23 @@ export default function AdminDashboard() {
   }, [status, router])
 
   useEffect(() => {
-    if (status === 'authenticated') {
-      fetchSubmissions()
+    if (status !== 'authenticated') return
+    let cancelled = false
+    ;(async () => {
+      try {
+        const response = await fetch('/api/admin/submissions')
+        if (response.ok && !cancelled) {
+          const data = await response.json()
+          setSubmissions(data.submissions)
+        }
+      } catch (error) {
+        console.error('Error fetching submissions:', error)
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
+    })()
+    return () => {
+      cancelled = true
     }
   }, [status])
 
@@ -78,20 +94,6 @@ export default function AdminDashboard() {
 
     setFilteredSubmissions(filtered)
   }, [submissions, filterStatus, searchQuery])
-
-  const fetchSubmissions = async () => {
-    try {
-      const response = await fetch('/api/admin/submissions')
-      if (response.ok) {
-        const data = await response.json()
-        setSubmissions(data.submissions)
-      }
-    } catch (error) {
-      console.error('Error fetching submissions:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const updateStatus = async (id: string, newStatus: string) => {
     try {
@@ -198,12 +200,12 @@ export default function AdminDashboard() {
               </p>
             </div>
             <div className="flex items-center gap-4">
-              <a
+              <Link
                 href="/"
                 className="text-blue-700 hover:text-blue-800 text-sm font-medium"
               >
                 View Portfolio
-              </a>
+              </Link>
               <Button
                 onClick={() => signOut({ callbackUrl: '/admin/login' })}
                 variant="outline"

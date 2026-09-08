@@ -1,87 +1,55 @@
-name: Deploy to hosting.com
+name: Deploy to Cloudflare Workers
 
 on:
   push:
-    branches: [master]
-  workflow_dispatch: {}
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # Requires these GitHub secrets:
+    #   CLOUDFLARE_API_TOKEN  - token with Workers Scripts:Edit for the account
+    #   CLOUDFLARE_ACCOUNT_ID - a108878ef3240a46d86cd3883ec6abd4 (same as Otterly)
+    #   DATABASE_URL          - Neon pooled Postgres connection string
+    #   DATABASE_URL_UNPOOLED - Neon direct connection string (migrations); falls
+    #                           back to DATABASE_URL if unset
+    #   NEXTAUTH_SECRET       - NextAuth JWT secret
+    #   NEXTAUTH_URL          - https://ericfletcher.xyz
+    #   OTTERLY_API_URL       - https://otterly.work
+    #   OTTERLY_API_KEY       - Otterly leads API bearer token
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 22
+          cache: npm
 
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
       - name: Generate Prisma client
         run: npx prisma generate
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DATABASE_URL_UNPOOLED: ${{ secrets.DATABASE_URL_UNPOOLED }}
 
-      - name: Sync database schema
-        run: npx prisma db push --skip-generate
+      - name: Run database migrations
+        run: npx prisma migrate deploy
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DATABASE_URL_UNPOOLED: ${{ secrets.DATABASE_URL_UNPOOLED }}
+          DATABASE_URL_UNPOOLED: ${{ secrets.DATABASE_URL_UNPOOLED || secrets.DATABASE_URL }}
 
-      - name: Build
-        run: npm run build
+      - name: Build OpenNext output
+        run: npx opennextjs-cloudflare build
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DATABASE_URL_UNPOOLED: ${{ secrets.DATABASE_URL_UNPOOLED }}
-          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
           OTTERLY_API_URL: ${{ secrets.OTTERLY_API_URL }}
           OTTERLY_API_KEY: ${{ secrets.OTTERLY_API_KEY }}
 
-      - name: Prune to production dependencies
-        run: npm prune --omit=dev --legacy-peer-deps
-
-      - name: Package build artifact
-        run: tar -czf ../deploy.tar.gz --exclude=.git --exclude=.github . && mv ../deploy.tar.gz ./deploy.tar.gz
-
-      - name: Upload archive to server
-        uses: appleboy/scp-action@v0.1.7
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
         with:
-          host: ${{ secrets.SSH_HOST }}
-          port: ${{ secrets.SSH_PORT }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: deploy.tar.gz
-          target: /tmp
-
-      - name: Extract archive (on server)
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          port: ${{ secrets.SSH_PORT }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          command_timeout: 10m
-          script: |
-            set -e
-            APP_NAME=$(basename "${{ secrets.SSH_APP_PATH }}")
-            source "/home/${{ secrets.SSH_USER }}/nodevenv/${APP_NAME}/20/bin/activate"
-            mkdir -p "${{ secrets.SSH_APP_PATH }}"
-            rm -rf "${{ secrets.SSH_APP_PATH }}"/.next "${{ secrets.SSH_APP_PATH }}"/node_modules
-            tar -xzf /tmp/deploy.tar.gz -C "${{ secrets.SSH_APP_PATH }}"
-            rm -f /tmp/deploy.tar.gz
-
-      - name: Restart app (Passenger)
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          port: ${{ secrets.SSH_PORT }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            mkdir -p ${{ secrets.SSH_APP_PATH }}/tmp
-            touch ${{ secrets.SSH_APP_PATH }}/tmp/restart.txt
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy

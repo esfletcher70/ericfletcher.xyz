@@ -11,6 +11,14 @@ node_modules/
 /out/
 /.build/
 
+# Cloudflare / OpenNext
+/.open-next/
+/.wrangler/
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+cloudflare-env.d.ts
+
 # Production
 /build
 /dist

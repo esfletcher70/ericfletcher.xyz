@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
-import { sendEmail, generateContactNotificationEmail } from '@/lib/email'
 import { notifyOtterlyOfLead } from '@/lib/otterly'
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
+import { withTimeout } from '@/lib/with-timeout'
 
 export const dynamic = 'force-dynamic'
 
 const RATE_LIMIT = 5
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000 // 10 minutes
+const DB_TIMEOUT_MS = 8000
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,61 +23,27 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { name, email, message } = body
 
-    // Validate input
     if (!name || !email || !message) {
-      return NextResponse.json(
-        { error: 'All fields are required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'All fields are required' }, { status: 400 })
     }
 
-    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
-      return NextResponse.json(
-        { error: 'Invalid email address' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid email address' }, { status: 400 })
     }
 
-    // Save to database
-    const submission = await prisma.contactSubmission.create({
-      data: {
-        name,
-        email,
-        message,
-        status: 'new',
-      },
-    })
+    const submission = await withTimeout(
+      prisma.contactSubmission.create({
+        data: { name, email, message, status: 'new' },
+      }),
+      DB_TIMEOUT_MS,
+      'contact submission insert'
+    )
 
-    console.log('New contact submission:', {
-      id: submission.id,
-      name,
-      email,
-      timestamp: submission.createdAt,
-    })
+    console.log('New contact submission:', { id: submission.id, name, email })
 
-    // Send email notification. The submission is already saved, so a failure
-    // here shouldn't fail the request or prompt the user to resubmit — just log it.
-    try {
-      const emailContent = generateContactNotificationEmail({
-        name,
-        email,
-        message,
-        timestamp: submission.createdAt,
-      })
-
-      await sendEmail({
-        to: 'hello@ericfletcher.xyz',
-        subject: emailContent.subject,
-        html: emailContent.html,
-      })
-    } catch (emailError) {
-      console.error('Error sending contact notification email:', emailError)
-    }
-
-    // Sync lead to Otterly CRM. Best-effort/non-blocking, same as the email
-    // notification above — a failure here must never fail the user's submission.
+    // Sync the lead to Otterly. Best-effort — the submission is already saved,
+    // so a failure here must never fail the user's request.
     try {
       await notifyOtterlyOfLead({ name, email, message })
     } catch (otterlyError) {
@@ -84,10 +51,7 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(
-      {
-        success: true,
-        message: 'Your message has been sent successfully!',
-      },
+      { success: true, message: 'Your message has been sent successfully!' },
       { status: 200 }
     )
   } catch (error) {
