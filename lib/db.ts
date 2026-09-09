@@ -1,13 +1,25 @@
 import 'server-only'
 import { PrismaClient } from '@prisma/client'
 import { PrismaNeon } from '@prisma/adapter-neon'
+import { neonConfig } from '@neondatabase/serverless'
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient | undefined }
 
 /**
- * Neon driver adapter (WebSocket transport) so Prisma runs on the Cloudflare
- * Workers runtime with no native query-engine binary/process. A non-Neon URL
- * (localhost) falls back to the standard engine over TCP for local dev.
+ * Route pooled queries over stateless HTTP `fetch` instead of a persistent
+ * WebSocket. The Prisma client is instantiated once per Worker isolate and
+ * reused across requests; a WebSocket opened for request A cannot be touched
+ * from request B ("Cannot perform I/O on behalf of a different request"), which
+ * surfaced as intermittent 500s. `fetch` carries no cross-request state.
+ * Every query in this app is a single statement (no interactive transactions),
+ * so nothing needs the WebSocket path.
+ */
+neonConfig.poolQueryViaFetch = true
+
+/**
+ * Neon driver adapter so Prisma runs on the Cloudflare Workers runtime with no
+ * native query-engine binary/process. A non-Neon URL (localhost) falls back to
+ * the standard engine over TCP for local dev.
  */
 function createPrismaClient() {
   const connectionString = process.env.DATABASE_URL
