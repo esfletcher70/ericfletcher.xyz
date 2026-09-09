@@ -20,6 +20,7 @@
     "binding": "IMAGES"
   },
   "vars": {
-    "NEXTAUTH_URL": "https://ericfletcher.xyz"
+    "NEXTAUTH_URL": "https://ericfletcher.xyz",
+    "OTTERLY_API_URL": "https://otterly.work"
   }
 }
