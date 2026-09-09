@@ -41,6 +41,10 @@ jobs:
       - name: Build OpenNext output
         run: npx opennextjs-cloudflare build
         env:
+          # Build-time only — lets `next build` run. The Worker reads these at
+          # runtime from the Cloudflare secrets uploaded in the deploy step
+          # below (OpenNext's next-env.mjs only captures values from committed
+          # .env files, which this repo does not have).
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
           NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
@@ -53,3 +57,13 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
+          # Runtime env for the Worker. NEXTAUTH_URL and OTTERLY_API_URL are
+          # non-secret and live in wrangler.jsonc `vars`.
+          secrets: |
+            DATABASE_URL
+            NEXTAUTH_SECRET
+            OTTERLY_API_KEY
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          OTTERLY_API_KEY: ${{ secrets.OTTERLY_API_KEY }}
