@@ -2,11 +2,14 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
+import { withTimeout } from '@/lib/with-timeout'
 
 export const dynamic = 'force-dynamic'
 
+const DB_TIMEOUT_MS = 8000
+
 // GET all submissions
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions)
 
@@ -14,19 +17,16 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const submissions = await prisma.contactSubmission.findMany({
-      orderBy: {
-        createdAt: 'desc',
-      },
-    })
+    const submissions = await withTimeout(
+      prisma.contactSubmission.findMany({ orderBy: { createdAt: 'desc' } }),
+      DB_TIMEOUT_MS,
+      'submissions list'
+    )
 
     return NextResponse.json({ submissions })
   } catch (error) {
     console.error('Error fetching submissions:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch submissions' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to fetch submissions' }, { status: 500 })
   }
 }
 
@@ -43,27 +43,22 @@ export async function PATCH(request: NextRequest) {
     const { id, status, notes } = body
 
     if (!id) {
-      return NextResponse.json(
-        { error: 'Submission ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Submission ID is required' }, { status: 400 })
     }
 
-    const updateData: any = {}
+    const updateData: { status?: string; notes?: string } = {}
     if (status !== undefined) updateData.status = status
     if (notes !== undefined) updateData.notes = notes
 
-    const submission = await prisma.contactSubmission.update({
-      where: { id },
-      data: updateData,
-    })
+    const submission = await withTimeout(
+      prisma.contactSubmission.update({ where: { id }, data: updateData }),
+      DB_TIMEOUT_MS,
+      'submission update'
+    )
 
     return NextResponse.json({ submission })
   } catch (error) {
     console.error('Error updating submission:', error)
-    return NextResponse.json(
-      { error: 'Failed to update submission' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to update submission' }, { status: 500 })
   }
 }

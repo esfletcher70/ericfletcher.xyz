@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import Script from 'next/script'
 import './globals.css'
 import { cn } from '@/lib/utils'
 import { Providers } from '@/components/providers'
@@ -43,8 +42,18 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={cn(inter.className, 'antialiased')}>
+        {/*
+         * Shim for the `__name` helper. Some build toolchains (SWC/esbuild with
+         * "keep names" on) inject `__name(...)` calls into inline <script> tags
+         * that run in global scope, where the helper is undefined, throwing
+         * `ReferenceError: __name is not defined` and breaking hydration.
+         */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: 'window.__name||(window.__name=function(f){return f});',
+          }}
+        />
         <Providers>{children}</Providers>
-        <Script src="https://apps.abacus.ai/chatllm/appllm-lib.js" strategy="afterInteractive" />
       </body>
     </html>
   )

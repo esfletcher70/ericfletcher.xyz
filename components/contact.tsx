@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { Mail, Phone, Linkedin, Send, CheckCircle, AlertCircle } from 'lucide-react'
+import { Mail, Linkedin, Send, CheckCircle, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -47,7 +47,7 @@ export default function Contact() {
         setStatus('error')
         setErrorMessage(data?.error ?? 'Something went wrong. Please try again.')
       }
-    } catch (error) {
+    } catch {
       setStatus('error')
       setErrorMessage('Failed to send message. Please try again.')
     }

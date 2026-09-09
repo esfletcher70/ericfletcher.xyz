@@ -3,10 +3,12 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import { prisma } from '@/lib/db'
 import { checkRateLimit } from '@/lib/rate-limit'
+import { withTimeout } from '@/lib/with-timeout'
 import bcrypt from 'bcryptjs'
 
 const LOGIN_RATE_LIMIT = 5
 const LOGIN_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000 // 15 minutes
+const DB_TIMEOUT_MS = 8000
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -26,11 +28,11 @@ export const authOptions: NextAuthOptions = {
           throw new Error('Too many login attempts. Please try again later.')
         }
 
-        const user = await prisma.user.findUnique({
-          where: {
-            email: credentials.email,
-          },
-        })
+        const user = await withTimeout(
+          prisma.user.findUnique({ where: { email: credentials.email } }),
+          DB_TIMEOUT_MS,
+          'login user lookup'
+        )
 
         if (!user || !user.password) {
           throw new Error('Invalid credentials')
